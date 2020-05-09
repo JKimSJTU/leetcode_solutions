@@ -1,0 +1,44 @@
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+#Solution 1 
+#二叉搜索树的中序遍历是升序数组
+#中序遍历后，求两相邻节点之差的最小值
+class Solution:
+    def minDiffInBST(self, root: TreeNode) -> int:
+        def dfs(node):
+            if not node:
+                return []
+            
+            return dfs(node.left) + [node.val] + dfs(node.right)
+        
+        res = 99999
+        l = dfs(root)
+        for i in range(1,len(l)):
+            res = min(res, l[i]- l[i-1])
+    
+        return res
+
+ #Solution 2
+ #不存储中序遍历数组结果，而是用一个变量 pre 来储存中序遍历上一个节点的值
+ #空间复杂度降低到 O(Height)。
+ class Solution:
+    def minDiffInBST(self, root: TreeNode) -> int:
+        def dfs(node):
+            if not node:
+                return []
+            
+            dfs(node.left)
+            self.res = min(self.res, node.val - self.pre)
+            self.pre = node.val
+            dfs(node.right)
+
+        
+        self.res = 99999
+        self.pre = -99999
+        dfs(root)
+        return self.res
