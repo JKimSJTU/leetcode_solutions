@@ -1,0 +1,17 @@
+#给定一个字符串S，通过将字符串S中的每个字母转变大小写，我们可以获得一个新的字符串。返回所有可能得到的字符串集合。
+class Solution:
+    def letterCasePermutation(self, S: str) -> List[str]:
+        res = [[]]
+        for char in S:
+            n = len(res)
+            if char.isalpha():
+                for i in range(n):
+                    res.append(res[i][:])
+                    res[i].append(char.lower())
+                    res[i+n].append(char.upper())
+            
+            else:
+                for i in range(n):
+                    res[i].append(char)
+        
+        return map(''.join,res)
