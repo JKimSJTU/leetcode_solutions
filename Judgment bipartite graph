@@ -1,0 +1,31 @@
+#给定一个无向图graph，当这个图为二分图时返回true。
+
+#如果我们能将一个图的节点集合分割成两个独立的子集A和B，并使图中的每一条边的两个节点一个来自A集合，一个来自B集合，我们就将这个图称为二分图。
+
+#graph将会以邻接表方式给出，graph[i]表示图中与节点i相连的所有节点。每个节点都是一个在0到graph.length-1之间的整数。这图中没有自环和平行边： graph[i] 中不存在i，并且graph[i]中没有重复的值。
+
+'''
+思路
+如果节点属于第一个集合，将其着为蓝色，否则着为红色。只有在二分图的情况下，可以使用贪心思想给图着色：一个节点为蓝色，说明它的所有邻接点为红色，它的邻接点的所有邻接点为蓝色，依此类推。
+
+算法
+使用数组（或者哈希表）记录每个节点的颜色： color[node]。颜色可以是 0， 1，或者未着色（-1 或者 null）。
+搜索节点时，需要考虑图是非连通的情况。对每个未着色节点，从该节点开始深度优先搜索着色。每个邻接点都可以通过当前节点着相反的颜色。如果存在当前点和邻接点颜色相同，则着色失败。
+使用栈完成深度优先搜索，栈类似于节点的 “todo list”，存储着下一个要访问节点的顺序。在 graph[node] 中，对每个未着色邻接点，着色该节点并将其放入到栈中。
+'''
+class Solution:
+    def isBipartite(self, graph: List[List[int]]) -> bool:
+        color = {}
+        for node in range(len(graph)):
+            if node not in color:
+                stack = [node]
+                color[node] = 0
+                while stack:
+                    node = stack.pop()
+                    for next_node in graph[node]:
+                        if next_node not in color:
+                            stack.append(next_node)
+                            color[next_node] = color[node] ^ 1
+                        elif color[next_node] == color[node]:
+                            return False
+        return True
